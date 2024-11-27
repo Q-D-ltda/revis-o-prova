@@ -1,0 +1,88 @@
+#include <stdio.h>
+
+#define TAMANHO 8
+
+typedef struct {
+    int codigo;
+    char nome[100];
+    float salarioBase;
+    int numHorasExtras;
+    float valorHoraExtra;
+} Funcionario;
+
+void preencherFuncionarios(Funcionario funcionarios[], int tamanho) {
+    int i; 
+    for (i = 0; i < tamanho; i++) {
+        printf("Digite o codigo do funcionario: ");
+        scanf("%d", &funcionarios[i].codigo);
+        printf("Digite o nome do funcionario: ");
+        scanf(" %[^\n]", funcionarios[i].nome);
+        printf("Digite o salario base do funcionario: ");
+        scanf("%f", &funcionarios[i].salarioBase);
+        printf("Digite o numero de horas extras: ");
+        scanf("%d", &funcionarios[i].numHorasExtras);
+        printf("Digite o valor da hora extra: ");
+        scanf("%f", &funcionarios[i].valorHoraExtra);
+    }
+}
+
+float calcularSalarioTotal(Funcionario func) {
+    return func.salarioBase + (func.numHorasExtras * func.valorHoraExtra);
+}
+
+Funcionario encontrarMaiorSalario(Funcionario funcionarios[], int tamanho) {
+    Funcionario maiorSalario = funcionarios[0];  
+    int i;
+    for (i = 1; i < tamanho; i++) {  
+        if (calcularSalarioTotal(funcionarios[i]) > calcularSalarioTotal(maiorSalario)) {
+            maiorSalario = funcionarios[i];
+        }
+    }
+    return maiorSalario;
+}
+
+
+float calcularMediaSalarial(Funcionario funcionarios[], int tamanho) {
+    float soma = 0.0;
+    int i;
+    for (i = 0; i < tamanho; i++) { 
+        soma += calcularSalarioTotal(funcionarios[i]);
+    }
+    return soma / tamanho;
+}
+
+void exibirFuncionario(Funcionario func) {
+    printf("\nCodigo: %d\n", func.codigo);
+    printf("Nome: %s\n", func.nome);
+    printf("Salario Base: %.2f\n", func.salarioBase);
+    printf("Horas Extras: %d\n", func.numHorasExtras);
+    printf("Valor Hora Extra: %.2f\n", func.valorHoraExtra);
+    printf("Salario Total: %.2f\n", calcularSalarioTotal(func));
+}
+
+void imprimirRelatorioAcimaDaMedia(Funcionario funcionarios[], int tamanho, float media) {
+    printf("\nFuncionarios com salário acima da media (%.2f):\n", media);
+    int i;
+    for (i = 0; i < tamanho; i++) { 
+        if (calcularSalarioTotal(funcionarios[i]) > media) {
+            exibirFuncionario(funcionarios[i]);
+        }
+    }
+}
+
+int main() {
+    Funcionario funcionarios[TAMANHO];
+    
+    preencherFuncionarios(funcionarios, TAMANHO);
+   
+    Funcionario maiorSalario = encontrarMaiorSalario(funcionarios, TAMANHO);
+    printf("\nFuncionario com maior salario:\n");
+    exibirFuncionario(maiorSalario);
+
+    float mediaSalarial = calcularMediaSalarial(funcionarios, TAMANHO);
+    printf("\nMedia salarial da empresa: %.2f\n", mediaSalarial);
+
+    imprimirRelatorioAcimaDaMedia(funcionarios, TAMANHO, mediaSalarial);
+
+    return 0;
+}
